@@ -30,15 +30,17 @@ app.get("/groceries", async(request, response) => {
 })
 
 app.get("/groceries/:id", async(request, response) => {
-    const grocery = await Grocery.findById(request.params.id)
+    const { id } = request.params
+    const grocery = await Grocery.findById(id)
     response.send(grocery)
     response.end
 })
 
 app.post("/groceries", async(request, response) => {
+    const { name, checked } = request.body
     const grocery = new Grocery({
-        name: request.body.name,
-        checked: request.body.checked
+        name: name,
+        checked: checked
     })
 
     const newGrocery = await grocery.save()
@@ -47,10 +49,12 @@ app.post("/groceries", async(request, response) => {
 })
 
 app.put("/groceries/:id", async(request, response) => {
-    const grocery = await Grocery.findOneAndUpdate({ _id: request.params.id }, {
+    const { id } = request.params
+    const { name, checked } = request.body
+    const grocery = await Grocery.findOneAndUpdate({ _id: id }, {
         $set: {
-            name: request.body.name,
-            checked: request.body.checked
+            name: name,
+            checked: checked
         }
     }, { new: true })
     response.send(grocery)
@@ -58,7 +62,8 @@ app.put("/groceries/:id", async(request, response) => {
 })
 
 app.delete("/groceries/:id", async(request, response) => {
-    const grocery = await Grocery.findOneAndDelete({ _id: request.params.id })
+    const { id } = request.params
+    const grocery = await Grocery.findOneAndDelete({ _id: id })
     response.send(grocery)
     response.end
 })
