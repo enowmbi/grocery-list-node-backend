@@ -21,21 +21,21 @@ const grocerySchema = mongoose.Schema({
     checked: { type: Boolean, default: false },
 })
 
-const Grocery = new mongoose.model('Grocery', grocerySchema)
+const Grocery = mongoose.model('Grocery', grocerySchema)
 
-app.get("/groceries || /", async(request, response) => {
+app.get("/groceries", async(request, response) => {
     const groceries = await Grocery.find()
     response.send(groceries)
     response.end
 })
 
-app.get("/groceries/:id || /:id", async(request, response) => {
-    const grocery = await Grocery.find({ _id: request.params.id })
+app.get("/groceries/:id", async(request, response) => {
+    const grocery = await Grocery.findById(request.params.id)
     response.send(grocery)
     response.end
 })
 
-app.post("/groceries || /", async(request, response) => {
+app.post("/groceries", async(request, response) => {
     const grocery = new Grocery({
         name: request.body.name,
         checked: request.body.checked
@@ -43,6 +43,17 @@ app.post("/groceries || /", async(request, response) => {
 
     const newGrocery = await grocery.save()
     response.send(newGrocery)
+    response.end
+})
+
+app.put("/groceries/:id", async(request, response) => {
+    const grocery = await Grocery.findOneAndUpdate({ _id: request.params.id }, {
+        $set: {
+            name: request.body.name,
+            checked: request.body.checked
+        }
+    }, { new: true })
+    response.send(grocery)
     response.end
 })
 
