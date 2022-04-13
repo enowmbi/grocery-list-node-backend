@@ -57,6 +57,14 @@ app.put("/groceries/:id", async(request, response) => {
     response.end
 })
 
+app.delete("/groceries/:id", async(request, response) => {
+    const grocery = await Grocery.findOneAndDelete({ _id: request.params.id })
+    response.send(grocery)
+    response.end
+})
+
+
+
 
 app.listen(PORT, (error) => {
     if (error) return console.log(`An error occured while trying to listen on ${PORT}`)
